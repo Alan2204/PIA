@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
+//Aqui se configuran los services y middlewares.
+
 namespace WebApiCitasMedicas
 {
     public class Startup

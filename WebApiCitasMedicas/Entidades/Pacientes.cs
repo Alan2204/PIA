@@ -1,6 +1,7 @@
 ﻿namespace WebApiCitasMedicas.Entidades
 {
-    public class Pacientes
-    {
+    public class Pacientes { 
+    
+
     }
 }
