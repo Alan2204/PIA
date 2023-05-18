@@ -1,4 +1,6 @@
-﻿namespace WebApiCitasMedicas.Entidades
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace WebApiCitasMedicas.Entidades
 {
     public class InformacionMedica
     {
