@@ -10,6 +10,9 @@
         public int Telefono { get; set; }
         public string Direccion { get; set; }
         public string Correo { get; set; }
+        public List<Citas> citas { get; set; }
+        public List<Estadisticas> estadisticas { get; set; }
+        public List<InformacionMedica> informacionmedica { get; set; }
 
 
     }

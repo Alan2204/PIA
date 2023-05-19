@@ -9,9 +9,11 @@ namespace WebApiCitasMedicas.Entidades
         public string Nombre { get; set; }
         public string Apellidos { get; set; }
         public string Sexo { get; set; }
-        public DateOnly FechaNacimeinto { get; set; }
+        public DateTime FechaNacimeinto { get; set; }
         public string Correo { get; set; }
         public string Direccion { get; set; }
+        public List<Citas> citas { get; set; }
+        public List<InformacionMedica> informacionMedica { get; set; }
 
 
     }

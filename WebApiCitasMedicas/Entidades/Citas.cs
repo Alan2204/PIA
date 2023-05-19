@@ -3,9 +3,11 @@
     public class Citas
     {
         public int Id { get; set; }
-        public DateOnly Fecha { get; set; }
-        public TimeOnly Hora { get; set; }
-        public int IdMedico { get; set; }
-        public int IdPaciente { get; set; }
+        public DateTime Fecha { get; set; }
+        public int MedicosId { get; set; }
+        public int PacienteId { get; set; }       
+        public Medicos medicos { get; set; }
+        public Paciente paciente { get; set; }
+        public List<ReporteConsulta> reporteconsulta { get; set; }
     }
 }

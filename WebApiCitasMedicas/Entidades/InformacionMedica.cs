@@ -10,6 +10,9 @@ namespace WebApiCitasMedicas.Entidades
         public string Alergias { get; set; }
         public string Enfermedades { get; set; }
         public DateTime FechaAtualizacion { get; set; }
-        public int IdPaciente { get; set; }
+        public int PacienteId { get; set; }
+        public int MedicosId { get; set; }
+        public Paciente paciente { get; set; }
+        public Medicos medicos { get; set; }
     }
 }

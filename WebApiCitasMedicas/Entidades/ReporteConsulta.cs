@@ -6,6 +6,7 @@
         public string Motivo { get; set; }
         public string Tratamiento { get; set; }
         public string Receta { get; set; }
-        public int IdCita { get; set; }
+        public int CitasId { get; set; }
+        public Citas citas { get; set; }
     }
 }
