@@ -36,6 +36,7 @@ namespace WebApiCitasMedicas.Controllers
             this.configuration = configuration;
         }
 
+        [Authorize("EsPaciente")]
         [HttpGet("/misdatos")]
         public async Task<ActionResult<GetPacienteDTO>> GetDatos()
         {
@@ -55,26 +56,26 @@ namespace WebApiCitasMedicas.Controllers
         }
 
 
-        [HttpGet("miscitas")]
-        public async Task<ActionResult<List<GetCitasAgendadasDTO>>> Get()
-        {
-            var emailClaim = HttpContext.User.Claims.Where(claim => claim.Type == "email").FirstOrDefault();
-            var email = emailClaim.Value;
+        /* [HttpGet("miscitas")]
+         public async Task<ActionResult<List<GetCitasAgendadasDTO>>> Get()
+         {
+             var emailClaim = HttpContext.User.Claims.Where(claim => claim.Type == "email").FirstOrDefault();
+             var email = emailClaim.Value;
 
-            var usuario = await userManager.FindByEmailAsync(email);
-            var usuarioId = usuario.Id;
+             var usuario = await userManager.FindByEmailAsync(email);
+             var usuarioId = usuario.Id;
 
-            var idpaciente = await dbContext.Pacientes.Where(x => x.UsuarioId == usuarioId).SingleAsync();
-            var idcitas = await dbContext.CitasAgendadas.Where(x => x.PacienteId == idpaciente.Id).Include(citas => citas.citas).ToListAsync();
-            
-            //var y = await dbContext.Citas.Include(miscitas => idcitas.Contains(miscitas.Id));
+             var idpaciente = await dbContext.Pacientes.Where(x => x.UsuarioId == usuarioId).SingleAsync();
+             var idcitas = await dbContext.CitasAgendadas.Where(x => x.PacienteId == idpaciente.Id).Include(citas => citas.citas).ToListAsync();
 
-            
-            return mapper.Map<List<GetCitasAgendadasDTO>>(idcitas);
-        }
+             //var y = await dbContext.Citas.Include(miscitas => idcitas.Contains(miscitas.Id));
 
- 
 
+             return mapper.Map<List<GetCitasAgendadasDTO>>(idcitas);
+         }*/
+
+
+        [Authorize("EsPaciente")]
         [HttpPost("/registrarpaciente")]
         public async Task<ActionResult> Post(PacienteDTO pacientedto)
         {
@@ -99,8 +100,8 @@ namespace WebApiCitasMedicas.Controllers
           
         }
 
-    
 
+        [Authorize("EsPaciente")]
         [HttpPut("/actualizardatospaciente/{id:int}")]
         public async Task<ActionResult> Put(PacienteDTO pacientedto, int id)
         {
@@ -120,6 +121,7 @@ namespace WebApiCitasMedicas.Controllers
             return Ok();
         }
 
+        [Authorize("EsMedico")]
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {

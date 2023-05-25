@@ -59,7 +59,7 @@ namespace WebApiCitasMedicas.Controllers
             return Ok();
         }
 
-        [HttpPut("{id:int}")]
+       /* [HttpPut("{id:int}")]
         public async Task<ActionResult> Put(MedicosDTO medicosdto, int id)
         {
             var exist = await dbContext.Medicos.AnyAsync(x => x.Id == id );
@@ -74,9 +74,9 @@ namespace WebApiCitasMedicas.Controllers
             dbContext.Update(medicos);
             await dbContext.SaveChangesAsync();
             return Ok();
-        }
+        }*/
 
-        [HttpDelete("{id:int}")]
+       /* [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
 
@@ -93,7 +93,7 @@ namespace WebApiCitasMedicas.Controllers
 
             await dbContext.SaveChangesAsync();
             return Ok();
-        }
+        }*/
 
 
 

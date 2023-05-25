@@ -27,10 +27,20 @@ namespace WebApiCitasMedicas.Controllers
             this.userManager = userManager;
         }
         [HttpGet]
-        public async Task<ActionResult<List<GetEstadisticasDTO>>> Get()
+        public async Task<ActionResult<GetEstadisticasDTO>> Get()
         {
-            var estadisticas = await dbContext.Estadisticas.ToListAsync();
-            return mapper.Map<List<GetEstadisticasDTO>>(estadisticas);
+            var emailClaim = HttpContext.User.Claims.Where(claim => claim.Type == "email").FirstOrDefault();
+            var email = emailClaim.Value;
+
+            var usuario = await userManager.FindByEmailAsync(email);
+            var usuarioId = usuario.Id;
+
+            var x = await dbContext.Medicos.Where(x => x.UsuarioId == usuarioId).SingleAsync();
+
+            var info = await dbContext.Estadisticas.FirstOrDefaultAsync(x => x.MedicosId == x.Id);
+
+           
+            return mapper.Map<GetEstadisticasDTO>(info);
         }
 
         [HttpPost("estadisticas")]
@@ -49,6 +59,13 @@ namespace WebApiCitasMedicas.Controllers
             }
 
             var x = await dbContext.Medicos.Where(x => x.UsuarioId == usuarioId).SingleAsync();
+
+            var existe2 = await dbContext.Estadisticas.AnyAsync(paciente => paciente.MedicosId == x.Id);
+
+            if (existe2)
+            {
+                return BadRequest("Ya has resgitrado esta informacion.");
+            }
 
             var estadisticas =  mapper.Map<Estadisticas>(estadisticasDTO);
             estadisticas.MedicosId = x.Id;

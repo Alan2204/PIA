@@ -12,7 +12,6 @@ namespace WebApiCitasMedicas.DTOs
         public string Alergias { get; set; }
         public string Enfermedades { get; set; }
         public DateTime FechaAtualizacion { get; set; }
-        public int PacienteId { get; set; }
         public int MedicoId { get; set; }
     }
 }

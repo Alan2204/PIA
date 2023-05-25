@@ -13,7 +13,7 @@ namespace WebApiCitasMedicas.Controllers
 {
     [ApiController]
     [Route("informacionmedica")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "EsPaciente")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class InformacionMedicaController : ControllerBase
     {
         private readonly ApplicationDbContext dbContext;
@@ -26,10 +26,10 @@ namespace WebApiCitasMedicas.Controllers
             this.mapper = mapper;
             this.userManager = userManager;
         }
-       
 
-        [HttpGet("/lectura/{id:int}")]
-        public async Task<ActionResult<GetInformacionMedicaDTO>> Get(int id)
+        [Authorize(Policy ="EsPaciente")]
+        [HttpGet("lectura")]
+        public async Task<ActionResult<GetInformacionMedicaDTO>> Get()
         {
             var emailClaim = HttpContext.User.Claims.Where(claim => claim.Type == "email").FirstOrDefault();
             var email = emailClaim.Value;
@@ -37,22 +37,13 @@ namespace WebApiCitasMedicas.Controllers
             var usuario = await userManager.FindByEmailAsync(email);
             var usuarioId = usuario.Id;
 
+            var pacienteid = await dbContext.Pacientes.Where(x => x.UsuarioId == usuarioId).SingleAsync();
 
-            var x = await dbContext.Pacientes.Where(x => x.UsuarioId == usuarioId).SingleAsync();
-
-            if(x.Id != id)
-            {
-                return BadRequest("No puedes ingresar el id de otro paciente");
-            }
-
-            var info = await dbContext.InformacionMedica.FirstOrDefaultAsync(x => x.PacienteId == id);
-            if (info == null)
-            {
-                return NotFound();
-            }
+            var info = await dbContext.InformacionMedica.FirstOrDefaultAsync(x => x.PacienteId == pacienteid.Id);
             return mapper.Map<GetInformacionMedicaDTO>(info);
         }
 
+        [Authorize(Policy = "EsPaciente")]
         [HttpPost]
         public async Task<ActionResult> Post(InformacionMedicaDTO informacionmedicadto)
         {
@@ -68,7 +59,15 @@ namespace WebApiCitasMedicas.Controllers
                 return BadRequest("No puedes registrar infromacion medica sin antes registrar tus datos.");
             }
 
+
+
             var x = await dbContext.Pacientes.Where(x => x.UsuarioId == usuarioId).SingleAsync();
+            var existe2 = await dbContext.InformacionMedica.AnyAsync(paciente => paciente.PacienteId == x.Id);
+
+            if (existe2)
+            {
+                return BadRequest("Ya tienes informacion medica registrada.");
+            }
           
             var info = mapper.Map<InformacionMedica>(informacionmedicadto);
             info.PacienteId = x.Id;
@@ -77,7 +76,7 @@ namespace WebApiCitasMedicas.Controllers
             return Ok();
         }
 
-
+        [Authorize(Policy = "EsPaciente")]
         [HttpPut("{id:int}")]
         public async Task<ActionResult> Put(InformacionMedicaDTO informacionMedicaDTO, int id)
         {

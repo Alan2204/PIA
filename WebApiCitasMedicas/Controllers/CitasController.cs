@@ -11,7 +11,7 @@ using WebApiCitasMedicas.Entidades;
 
 namespace WebApiCitasMedicas.Controllers
 {
-    //[ResponseCache]
+    
     [ApiController]
     [Route("citas")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -37,24 +37,24 @@ namespace WebApiCitasMedicas.Controllers
             return mapper.Map<List<GetCitasDTO>>(cita);
         }
 
-       /* [HttpGet("citasporfechadisponibles/{fecha:DateTime}")]
-        public async Task<ActionResult<List<GetCitasDTO>>> GetFecha(DateTime fecha)
-        {
-            var emailClaim = HttpContext.User.Claims.Where(claim => claim.Type == "email").FirstOrDefault();
-            var email = emailClaim.Value;
+        /* [HttpGet("citasporfechadisponibles/{fecha:DateTime}")]
+         public async Task<ActionResult<List<GetCitasDTO>>> GetFecha(DateTime fecha)
+         {
+             var emailClaim = HttpContext.User.Claims.Where(claim => claim.Type == "email").FirstOrDefault();
+             var email = emailClaim.Value;
 
-            var usuario = await userManager.FindByEmailAsync(email);
-            var usuarioId = usuario.Id;
+             var usuario = await userManager.FindByEmailAsync(email);
+             var usuarioId = usuario.Id;
 
-            var medicoid = await dbContext.Medicos.Where(x => x.UsuarioId == usuarioId).SingleAsync();
+             var medicoid = await dbContext.Medicos.Where(x => x.UsuarioId == usuarioId).SingleAsync();
 
-            var val = DateOnly.FromDateTime(fecha);
-            var citasAgendadasid = await dbContext.CitasAgendadas.Select(q => q.CitasId).ToListAsync();
-            var filtro = await dbContext.Citas.Where(h => !citasAgendadasid.Contains(h.Id) && h.MedicosId == medicoid.Id && h.Fecha == fecha).ToListAsync();
+             var val = DateOnly.FromDateTime(fecha);
+             var citasAgendadasid = await dbContext.CitasAgendadas.Select(q => q.CitasId).ToListAsync();
+             var filtro = await dbContext.Citas.Where(h => !citasAgendadasid.Contains(h.Id) && h.MedicosId == medicoid.Id && h.Fecha == fecha).ToListAsync();
 
 
-            return mapper.Map<List<GetCitasDTO>>(filtro);
-        }*/
+             return mapper.Map<List<GetCitasDTO>>(filtro);
+         }*/
 
 
         /*[HttpGet("citasporfechaagendadas/{fecha:DateTime}")]
@@ -77,7 +77,7 @@ namespace WebApiCitasMedicas.Controllers
         }*/
 
 
-
+        [AllowAnonymous]
         [HttpGet("citasdisponibles/{id:int}")]
         public async Task<ActionResult<List<GetCitasDTO>>> Get(int id)
         {
@@ -89,6 +89,7 @@ namespace WebApiCitasMedicas.Controllers
             return mapper.Map<List<GetCitasDTO>>(filtro);
         }
 
+        
         [HttpGet("citasnodisponibles/{id:int}")]
         public async Task<ActionResult<List<GetCitasDTO>>> Get2(int id)
         {

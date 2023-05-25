@@ -23,6 +23,7 @@ namespace WebApiCitasMedicas.Utilidades
             CreateMap<EstadisticasDTO, Estadisticas>();
             CreateMap<ReporteConsulta, GetReporteConsulta>();
             CreateMap<CitasAgendadas, CitasAgendadasDTO>();
+            CreateMap<Estadisticas, GetEstadisticasDTO>();
 
         }
 
