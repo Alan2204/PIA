@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WebApiCitasMedicas.Entidades
+namespace WebApiCitasMedicas.DTOs
 {
-    public class Estadisticas
+    public class EstadisticasDTO
     {
-        public int Id { get; set; }
         [Required(ErrorMessage = "Es necesario el campo {0}. ")]
         public int TotalConsultas { get; set; }
         [Required(ErrorMessage = "Es necesario el campo {0}. ")]
@@ -12,7 +11,5 @@ namespace WebApiCitasMedicas.Entidades
         public int TotalPacientes { get; set; }
         [Required(ErrorMessage = "Es necesario el campo {0}. ")]
         public DateTime FechaActualizacion { get; set; }
-        public int MedicosId { get; set; }
-        public Medicos medicos { get; set; }
     }
 }

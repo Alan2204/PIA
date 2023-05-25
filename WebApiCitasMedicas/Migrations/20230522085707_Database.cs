@@ -15,17 +15,21 @@ namespace WebApiCitasMedicas.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Apellidos = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Nombre = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Apellidos = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Sexo = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Especialidad = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Telefono = table.Column<int>(type: "int", nullable: false),
+                    Especialidad = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Direccion = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Correo = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    UsuarioId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Medicos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Medicos_AspNetUsers_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -34,16 +38,41 @@ namespace WebApiCitasMedicas.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Apellidos = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Nombre = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Apellidos = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Sexo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FechaNacimeinto = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Correo = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Direccion = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Direccion = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UsuarioId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Pacientes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Pacientes_AspNetUsers_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Citas",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    MedicosId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Citas", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Citas_Medicos_MedicosId",
+                        column: x => x.MedicosId,
+                        principalTable: "Medicos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -69,33 +98,6 @@ namespace WebApiCitasMedicas.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Citas",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    MedicosId = table.Column<int>(type: "int", nullable: false),
-                    PacienteId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Citas", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Citas_Medicos_MedicosId",
-                        column: x => x.MedicosId,
-                        principalTable: "Medicos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Citas_Pacientes_PacienteId",
-                        column: x => x.PacienteId,
-                        principalTable: "Pacientes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "InformacionMedica",
                 columns: table => new
                 {
@@ -107,7 +109,8 @@ namespace WebApiCitasMedicas.Migrations
                     Enfermedades = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FechaAtualizacion = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PacienteId = table.Column<int>(type: "int", nullable: false),
-                    MedicosId = table.Column<int>(type: "int", nullable: false)
+                    MedicoId = table.Column<int>(type: "int", nullable: false),
+                    MedicosId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -116,10 +119,35 @@ namespace WebApiCitasMedicas.Migrations
                         name: "FK_InformacionMedica_Medicos_MedicosId",
                         column: x => x.MedicosId,
                         principalTable: "Medicos",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_InformacionMedica_Pacientes_PacienteId",
+                        column: x => x.PacienteId,
+                        principalTable: "Pacientes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CitasAgendadas",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CitasId = table.Column<int>(type: "int", nullable: false),
+                    PacienteId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CitasAgendadas", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CitasAgendadas_Citas_CitasId",
+                        column: x => x.CitasId,
+                        principalTable: "Citas",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_InformacionMedica_Pacientes_PacienteId",
+                        name: "FK_CitasAgendadas_Pacientes_PacienteId",
                         column: x => x.PacienteId,
                         principalTable: "Pacientes",
                         principalColumn: "Id",
@@ -135,15 +163,15 @@ namespace WebApiCitasMedicas.Migrations
                     Motivo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Tratamiento = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Receta = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CitasId = table.Column<int>(type: "int", nullable: false)
+                    CitasAgendadasId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ReporteConsulta", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ReporteConsulta_Citas_CitasId",
-                        column: x => x.CitasId,
-                        principalTable: "Citas",
+                        name: "FK_ReporteConsulta_CitasAgendadas_CitasAgendadasId",
+                        column: x => x.CitasAgendadasId,
+                        principalTable: "CitasAgendadas",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -154,8 +182,13 @@ namespace WebApiCitasMedicas.Migrations
                 column: "MedicosId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Citas_PacienteId",
-                table: "Citas",
+                name: "IX_CitasAgendadas_CitasId",
+                table: "CitasAgendadas",
+                column: "CitasId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CitasAgendadas_PacienteId",
+                table: "CitasAgendadas",
                 column: "PacienteId");
 
             migrationBuilder.CreateIndex(
@@ -174,9 +207,19 @@ namespace WebApiCitasMedicas.Migrations
                 column: "PacienteId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ReporteConsulta_CitasId",
+                name: "IX_Medicos_UsuarioId",
+                table: "Medicos",
+                column: "UsuarioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Pacientes_UsuarioId",
+                table: "Pacientes",
+                column: "UsuarioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ReporteConsulta_CitasAgendadasId",
                 table: "ReporteConsulta",
-                column: "CitasId");
+                column: "CitasAgendadasId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -191,13 +234,16 @@ namespace WebApiCitasMedicas.Migrations
                 name: "ReporteConsulta");
 
             migrationBuilder.DropTable(
+                name: "CitasAgendadas");
+
+            migrationBuilder.DropTable(
                 name: "Citas");
 
             migrationBuilder.DropTable(
-                name: "Medicos");
+                name: "Pacientes");
 
             migrationBuilder.DropTable(
-                name: "Pacientes");
+                name: "Medicos");
         }
     }
 }

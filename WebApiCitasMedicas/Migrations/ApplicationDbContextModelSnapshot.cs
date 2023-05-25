@@ -234,16 +234,34 @@ namespace WebApiCitasMedicas.Migrations
                     b.Property<int>("MedicosId")
                         .HasColumnType("int");
 
+                    b.HasKey("Id");
+
+                    b.HasIndex("MedicosId");
+
+                    b.ToTable("Citas", (string)null);
+                });
+
+            modelBuilder.Entity("WebApiCitasMedicas.Entidades.CitasAgendadas", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("CitasId")
+                        .HasColumnType("int");
+
                     b.Property<int>("PacienteId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MedicosId");
+                    b.HasIndex("CitasId");
 
                     b.HasIndex("PacienteId");
 
-                    b.ToTable("Citas");
+                    b.ToTable("CitasAgendadas", (string)null);
                 });
 
             modelBuilder.Entity("WebApiCitasMedicas.Entidades.Estadisticas", b =>
@@ -270,7 +288,7 @@ namespace WebApiCitasMedicas.Migrations
 
                     b.HasIndex("MedicosId");
 
-                    b.ToTable("Estadisticas");
+                    b.ToTable("Estadisticas", (string)null);
                 });
 
             modelBuilder.Entity("WebApiCitasMedicas.Entidades.InformacionMedica", b =>
@@ -293,7 +311,10 @@ namespace WebApiCitasMedicas.Migrations
                     b.Property<DateTime>("FechaAtualizacion")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("MedicosId")
+                    b.Property<int>("MedicoId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("MedicosId")
                         .HasColumnType("int");
 
                     b.Property<int>("PacienteId")
@@ -308,7 +329,7 @@ namespace WebApiCitasMedicas.Migrations
 
                     b.HasIndex("PacienteId");
 
-                    b.ToTable("InformacionMedica");
+                    b.ToTable("InformacionMedica", (string)null);
                 });
 
             modelBuilder.Entity("WebApiCitasMedicas.Entidades.Medicos", b =>
@@ -320,29 +341,33 @@ namespace WebApiCitasMedicas.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Apellidos")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Correo")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Direccion")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Especialidad")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nombre")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Sexo")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Telefono")
-                        .HasColumnType("int");
+                    b.Property<string>("UsuarioId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Medicos");
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("Medicos", (string)null);
                 });
 
             modelBuilder.Entity("WebApiCitasMedicas.Entidades.Paciente", b =>
@@ -354,10 +379,9 @@ namespace WebApiCitasMedicas.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Apellidos")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Correo")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Direccion")
                         .HasColumnType("nvarchar(max)");
@@ -366,14 +390,21 @@ namespace WebApiCitasMedicas.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Nombre")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Sexo")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UsuarioId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Pacientes");
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("Pacientes", (string)null);
                 });
 
             modelBuilder.Entity("WebApiCitasMedicas.Entidades.ReporteConsulta", b =>
@@ -384,7 +415,7 @@ namespace WebApiCitasMedicas.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("CitasId")
+                    b.Property<int>("CitasAgendadasId")
                         .HasColumnType("int");
 
                     b.Property<string>("Motivo")
@@ -398,9 +429,9 @@ namespace WebApiCitasMedicas.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CitasId");
+                    b.HasIndex("CitasAgendadasId");
 
-                    b.ToTable("ReporteConsulta");
+                    b.ToTable("ReporteConsulta", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -462,13 +493,24 @@ namespace WebApiCitasMedicas.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("medicos");
+                });
+
+            modelBuilder.Entity("WebApiCitasMedicas.Entidades.CitasAgendadas", b =>
+                {
+                    b.HasOne("WebApiCitasMedicas.Entidades.Citas", "citas")
+                        .WithMany("citasagendadas")
+                        .HasForeignKey("CitasId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("WebApiCitasMedicas.Entidades.Paciente", "paciente")
-                        .WithMany("citas")
+                        .WithMany("citasAgendadas")
                         .HasForeignKey("PacienteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("medicos");
+                    b.Navigation("citas");
 
                     b.Navigation("paciente");
                 });
@@ -486,11 +528,9 @@ namespace WebApiCitasMedicas.Migrations
 
             modelBuilder.Entity("WebApiCitasMedicas.Entidades.InformacionMedica", b =>
                 {
-                    b.HasOne("WebApiCitasMedicas.Entidades.Medicos", "medicos")
-                        .WithMany("informacionmedica")
-                        .HasForeignKey("MedicosId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("WebApiCitasMedicas.Entidades.Medicos", "Medicos")
+                        .WithMany("informacionMedica")
+                        .HasForeignKey("MedicosId");
 
                     b.HasOne("WebApiCitasMedicas.Entidades.Paciente", "paciente")
                         .WithMany("informacionMedica")
@@ -498,25 +538,48 @@ namespace WebApiCitasMedicas.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("medicos");
+                    b.Navigation("Medicos");
 
                     b.Navigation("paciente");
                 });
 
+            modelBuilder.Entity("WebApiCitasMedicas.Entidades.Medicos", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("WebApiCitasMedicas.Entidades.Paciente", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId");
+
+                    b.Navigation("Usuario");
+                });
+
             modelBuilder.Entity("WebApiCitasMedicas.Entidades.ReporteConsulta", b =>
                 {
-                    b.HasOne("WebApiCitasMedicas.Entidades.Citas", "citas")
-                        .WithMany("reporteconsulta")
-                        .HasForeignKey("CitasId")
+                    b.HasOne("WebApiCitasMedicas.Entidades.CitasAgendadas", "citasAgendadas")
+                        .WithMany("reporte")
+                        .HasForeignKey("CitasAgendadasId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("citas");
+                    b.Navigation("citasAgendadas");
                 });
 
             modelBuilder.Entity("WebApiCitasMedicas.Entidades.Citas", b =>
                 {
-                    b.Navigation("reporteconsulta");
+                    b.Navigation("citasagendadas");
+                });
+
+            modelBuilder.Entity("WebApiCitasMedicas.Entidades.CitasAgendadas", b =>
+                {
+                    b.Navigation("reporte");
                 });
 
             modelBuilder.Entity("WebApiCitasMedicas.Entidades.Medicos", b =>
@@ -525,12 +588,12 @@ namespace WebApiCitasMedicas.Migrations
 
                     b.Navigation("estadisticas");
 
-                    b.Navigation("informacionmedica");
+                    b.Navigation("informacionMedica");
                 });
 
             modelBuilder.Entity("WebApiCitasMedicas.Entidades.Paciente", b =>
                 {
-                    b.Navigation("citas");
+                    b.Navigation("citasAgendadas");
 
                     b.Navigation("informacionMedica");
                 });

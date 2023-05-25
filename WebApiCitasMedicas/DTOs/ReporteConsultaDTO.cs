@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WebApiCitasMedicas.Entidades
+namespace WebApiCitasMedicas.DTOs
 {
-    public class ReporteConsulta
+    public class ReporteConsultaDTO
     {
-        public int Id { get; set; }
         [Required(ErrorMessage = "Es necesario el campo {0}. ")]
         public string Motivo { get; set; }
         [Required(ErrorMessage = "Es necesario el campo {0}. ")]
@@ -12,7 +11,5 @@ namespace WebApiCitasMedicas.Entidades
         [Required(ErrorMessage = "Es necesario el campo {0}. ")]
         public string Receta { get; set; }
         public int CitasAgendadasId { get; set; }
-        public CitasAgendadas citasAgendadas { get; set; }
-        
     }
 }

@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace WebApiCitasMedicas.Entidades
+namespace WebApiCitasMedicas.DTOs
 {
-    public class InformacionMedica
+    public class InformacionMedicaDTO
     {
-        public int Id { get; set; }
         [Required(ErrorMessage = "Es necesario registrar el peso.")]
         [Range(20, 200, ErrorMessage = "Ingrese un peso valido")]
         public float Peso { get; set; }
@@ -16,7 +14,5 @@ namespace WebApiCitasMedicas.Entidades
         public DateTime FechaAtualizacion { get; set; }
         public int PacienteId { get; set; }
         public int MedicoId { get; set; }
-        public Paciente paciente { get; set; }
-        public Medicos Medicos { get; set; }    
     }
 }

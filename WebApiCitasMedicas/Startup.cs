@@ -17,8 +17,8 @@ namespace WebApiCitasMedicas
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+            Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
@@ -50,6 +50,8 @@ namespace WebApiCitasMedicas
                 });
 
             services.AddEndpointsApiExplorer();
+
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApiCitasMedicas", Version = "v1" });
@@ -85,9 +87,16 @@ namespace WebApiCitasMedicas
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddAuthorization(opciones =>
+            {
+                opciones.AddPolicy("EsAdmin", politica => politica.RequireClaim("esAdmin"));
+                opciones.AddPolicy("EsPaciente", politica => politica.RequireClaim("esPaciente"));
+                opciones.AddPolicy("EsMedico", politica => politica.RequireClaim("esMedico"));
+            });
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             // Configure the HTTP request pipeline.
             if (env.IsDevelopment())
